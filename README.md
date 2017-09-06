@@ -2,7 +2,7 @@
 
 **Note:** This is a work in progress.
 
-Shopping List is an Offline First demo [Progressive Web App | hybrid mobile app | native mobile app | desktop app] built using [Vanilla JS | Polymer | React | Preact | Vue.js | Ember.js | React Native | Ionic | Cordova | Swift | Kotlin | Electron] and [PouchDB | Cloudant Sync]. [Mult-user / multi-device capabilities are enabled by Hoodie.] [This app is part of a series of Offline First demo apps, each built using a different stack.](https://github.com/ibm-watson-data-lab/shopping-list) 
+Shopping List is an Offline First demo Progressive Web App  built using Preact and PouchDB. [Mult-user / multi-device capabilities are enabled by Hoodie.] [This app is part of a series of Offline First demo apps, each built using a different stack.](https://github.com/ibm-watson-data-lab/shopping-list) 
 
 ## Quick Start
 
