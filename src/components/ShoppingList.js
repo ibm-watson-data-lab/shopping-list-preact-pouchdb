@@ -43,7 +43,9 @@ class ShoppingList extends Component {
     ];
     /* end rename dialog stuff */
 
-    let items = this.props.shoppingListItems.map( (item) => 
+    let items = [];
+    for(let item of this.props.shoppingListItems) {
+      items.push(
       <div key={'listitem_'+item._id}>
       <li className='shoppinglistitem'>
         <a className="btn-flat" onCheck={this.props.toggleItemCheckFunc} data-item={item._id} data-id={item._id} checked={item.checked}>
@@ -61,8 +63,8 @@ class ShoppingList extends Component {
         </a>
       </li>
       <hr inset={true} />
-      </div>
-    );
+      </div>);
+    }
       
     return (
       <div>

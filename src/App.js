@@ -1,7 +1,7 @@
 import {h, Component} from 'preact';
 import {List} from 'immutable';
-import { ShoppingListFactory } from 'ibm-shopping-list-model/src/ShoppingListFactory.js';
-import { ShoppingListRepositoryPouchDB } from 'ibm-shopping-list-model/src/ShoppingListRepositoryPouchDB.js';
+import {ShoppingListFactory, ShoppingListRepositoryPouchDB} from 'ibm-shopping-list-model';
+import ShoppingList from './components/ShoppingList';
 import ShoppingLists from './components/ShoppingLists';
 
 const NOLISTMSG = "Click the + sign below to create a shopping list."
@@ -203,7 +203,7 @@ class App extends Component {
   }
 
   renderShoppingLists = () => {
-    if (this.state.shoppingLists.length < 1) 
+    if (this.state.shoppingLists.length < 1)
       return ( <div className="card" style={{margin:"12px 0"}}><span className="card-title">{NOLISTMSG}</span></div> );
     return (
       <ShoppingLists 
