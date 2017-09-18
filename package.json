@@ -5,10 +5,10 @@
   "main": "index.js", 
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
-    "build": "preact build",
+    "build": "preact build --no-prerender",
     "test": "eslint src && preact test",
-    "serve": "preact build && preact serve", 
-    "dev": "preact watch"
+    "serve": "preact build --no-prerender && preact serve", 
+    "dev": "preact watch --no-prerender"
   },
   "babel": {
     "plugins": [
@@ -29,8 +29,6 @@
   },
   "dependencies": {
     "preact": "^8.2.5",
-    "preact-compat": "^3.17.0",
-    "preact-router": "^2.5.7", 
     "ibm-shopping-list-model": "^0.2.1",
     "immutable": "^3.8.1",
     "pouchdb": "^6.3.4",

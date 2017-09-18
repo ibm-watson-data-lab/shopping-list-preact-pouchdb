@@ -4,6 +4,8 @@ import { ShoppingListRepositoryPouchDB } from 'ibm-shopping-list-model/src/Shopp
 import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import Credentials from './secret';
+import './material-icons.css';
+import './materialize.min.css';
 
 PouchDB.plugin(PouchDBFind);
 const localDB = new PouchDB('shopping_list_react');
@@ -19,4 +21,7 @@ shoppingListRepository.ensureIndexes().then(
     shoppingListRepository={shoppingListRepository} 
     localDB={localDB} remoteDB={remoteDB} />, 
     document.body)
-);
+).catch( err => {
+  console.log("ERROR in ensureIndexes");
+  console.log(err);
+});

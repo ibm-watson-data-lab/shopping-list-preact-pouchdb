@@ -1,3 +1,7 @@
+build
+.vscode 
+secret.js
+
 # Logs
 logs
 *.log

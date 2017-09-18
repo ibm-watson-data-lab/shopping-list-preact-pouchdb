@@ -30,7 +30,7 @@ class App extends Component {
       this.getShoppingLists();
       this.props.localDB.sync(this.props.remoteDB, {live: true, retry: true})
         .on('change', change => {
-          console.log('something changed!');
+          // console.log('something changed!');
           this.getPouchDocs();
         })
         // .on('paused', info => console.log('replication paused.'))
@@ -39,6 +39,7 @@ class App extends Component {
   }
 
   getShoppingLists = () => {
+    console.log("IN getShoppingLists");
     let checkedCount = List();
     let totalCount = List();
     let lists = null;
@@ -71,6 +72,9 @@ class App extends Component {
         checkedTotalShoppingListItemCount: checkedCount, 
         totalShoppingListItemCount: totalCount
       });
+    }).catch( err => {
+      console.log("ERROR in getShoppingLists");
+      console.log(err);
     });
   }
 
@@ -157,13 +161,13 @@ class App extends Component {
       let shoppingList = this.props.shoppingListFactory.newShoppingList({
         title: this.state.newName
       });
-      this.props.shoppingListRepository.post(shoppingList).then(this.getShoppingLists);
+      this.props.shoppingListRepository.put(shoppingList).then(this.getShoppingLists);
 
     } else if (this.state.view === 'items') {
       let item = this.props.shoppingListFactory.newShoppingListItem({
         title: this.state.newName
       }, this.state.shoppingList);
-      this.props.shoppingListRepository.postItem(item).then(item => {
+      this.props.shoppingListRepository.putItem(item).then(item => {
         this.getShoppingListItems(this.state.shoppingList._id).then(items => {
           this.setState({
             view: 'items', 
@@ -192,7 +196,7 @@ class App extends Component {
               fullWidth={false} 
               style={{padding:'0px 12px',width:'calc(100% - 24px)'}}
               underlineStyle={{width:'calc(100% - 24px)'}}/>
-            <label for="input-name">Name</label>
+            {/* <label for="input-name">Name</label> */}
         </div>
       </form>
     );
@@ -239,10 +243,14 @@ class App extends Component {
     if (this.state.view === 'items') screenname = this.state.shoppingList.title;
     return (
       <div className="App">
-        <div style={appBarStyle}>
-          {this.renderBackButton()}
-          {screenname} 
-        </div>
+        <nav>
+          <div className="nav-wrapper">
+            <div className="brand-logo left">
+              {this.renderBackButton()}
+              {screenname}
+            </div>
+          </div>
+        </nav>
         <div className={'listsanditems'} style={{margin:'8px'}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
           {this.state.view === 'lists' ? this.renderShoppingLists() : this.renderShoppingListItems()}
