@@ -42,7 +42,9 @@ class ShoppingLists extends Component {
     ];
     /* end rename dialog stuff */
     
-    let listItems = this.props.shoppingLists.map( (list) => 
+    let listItems = [];
+    for(let list of this.props.shoppingLists) {
+      listItems.push(
       <div className="card" key={list._id} style={{margin:"12px 0"}}>
         <span className="card-title">{list.title}</span>
         <p>{(this.props.checkedCounts.get(list._id) || 0)+' of '+(this.props.totalCounts.get(list._id) || 0)+' items checked.'}</p>
@@ -57,9 +59,8 @@ class ShoppingLists extends Component {
             <i className="material-icons">delete_forever</i> Delete
           </a>
         </div>
-      </div>
-  );
-
+      </div>);
+  }
   return (
     <div>
       <div>{listItems}</div>

@@ -1,6 +1,5 @@
 import {h, render, Component} from 'preact';
-import { ShoppingListFactory } from 'ibm-shopping-list-model/src/ShoppingListFactory.js';
-import { ShoppingListRepositoryPouchDB } from 'ibm-shopping-list-model/src/ShoppingListRepositoryPouchDB.js';
+import { ShoppingListFactory, ShoppingListRepositoryPouchDB } from 'ibm-shopping-list-model';
 import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import Credentials from './secret';
