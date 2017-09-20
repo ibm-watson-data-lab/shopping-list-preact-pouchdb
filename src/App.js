@@ -1,8 +1,8 @@
-import {h, Component} from 'preact';
-import {List} from 'immutable';
-import {ShoppingListFactory, ShoppingListRepositoryPouchDB} from 'ibm-shopping-list-model';
-import ShoppingList from './components/ShoppingList';
-import ShoppingLists from './components/ShoppingLists';
+import {h, Component} from "preact";
+import {List} from "immutable";
+import {ShoppingListFactory, ShoppingListRepositoryPouchDB} from "ibm-shopping-list-model";
+import ShoppingList from "./components/ShoppingList";
+import ShoppingLists from "./components/ShoppingLists";
 
 const NOLISTMSG = "Click the + sign below to create a shopping list."
 const NOITEMSMSG = "Click the + sign below to create a shopping list item."
@@ -21,21 +21,21 @@ class App extends Component {
       checkedTotalShoppingListItemCount: List(), //Immutable.js List with list ids as keys
       shoppingListItems: null, 
       adding: false, 
-      view: 'lists',
-      newName: ''
+      view: "lists",
+      newName: ""
     }
   }
 
   componentDidMount = () => {
       this.getShoppingLists();
       this.props.localDB.sync(this.props.remoteDB, {live: true, retry: true})
-        .on('change', change => {
-          // console.log('something changed!');
+        .on("change", change => {
+          // console.log("something changed!");
           this.getPouchDocs();
         })
-        // .on('paused', info => console.log('replication paused.'))
-        // .on('active', info => console.log('replication resumed.'))
-        .on('error', err => console.log('uh oh! an error occured.'));
+        // .on("paused", info => console.log("replication paused."))
+        // .on("active", info => console.log("replication resumed."))
+        .on("error", err => console.log("uh oh! an error occured."));
   }
 
   getShoppingLists = () => {
@@ -44,28 +44,28 @@ class App extends Component {
     let totalCount = List();
     let lists = null;
     this.props.shoppingListRepository.find().then( foundLists => {
-      // console.log('got Shopping Lists from PouchDB. count: '+foundLists.size);
+      // console.log("got Shopping Lists from PouchDB. count: "+foundLists.size);
       lists = foundLists;
       return foundLists;
     }).then( foundLists => {
       return this.props.shoppingListRepository.findItemsCountByList();
     }).then( countsList => { 
-      // console.log('TOTAL COUNT LIST');
+      // console.log("TOTAL COUNT LIST");
       // console.log(countsList);
       totalCount = countsList;
       return this.props.shoppingListRepository.findItemsCountByList({
         selector: {
-          type: 'item', 
+          type: "item", 
           checked: true
         },
-        fields: ['list']
+        fields: ["list"]
       });
     }).then( checkedList => {
-      // console.log('CHECKED LIST');
+      // console.log("CHECKED LIST");
       // console.log(checkedList);
       checkedCount = checkedList;
       this.setState({
-        view: 'lists', 
+        view: "lists", 
         shoppingLists: lists, 
         shoppingList: null,
         shoppingListItems: null, 
@@ -84,7 +84,7 @@ class App extends Component {
     }).then(list => {
       this.getShoppingListItems(listid).then(items => {
         this.setState({
-          view: 'items', 
+          view: "items", 
           shoppingList: list,
           shoppingListItems: items
         });
@@ -95,7 +95,7 @@ class App extends Component {
   getShoppingListItems = (listid) => {
     return this.props.shoppingListRepository.findItems({
       selector: {
-        type: 'item', 
+        type: "item", 
         list: listid
       }
     });
@@ -104,21 +104,21 @@ class App extends Component {
   refreshShoppingListItems = (listid) => {
     this.props.shoppingListRepository.findItems({
       selector: {
-        type: 'item', 
+        type: "item", 
         list: listid
       }
     }).then(items => {
       this.setState({
-        view: 'items', 
+        view: "items", 
         shoppingListItems: items
       });
     });
   }
 
   renameShoppingListItem = (itemid, newname) => {
-    console.log('IN renameShoppingListItem with id='+itemid+', name='+newname);
+    console.log("IN renameShoppingListItem with id="+itemid+", name="+newname);
     this.props.shoppingListRepository.getItem(itemid).then(item => {
-      item = item.set('title', newname);
+      item = item.set("title", newname);
       return this.props.shoppingListRepository.putItem(item);
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
@@ -131,7 +131,7 @@ class App extends Component {
 
   toggleItemCheck = (itemid) => {
     this.props.shoppingListRepository.getItem(itemid).then(item => {
-      item = item.set('checked', !item.checked);
+      item = item.set("checked", !item.checked);
       return this.props.shoppingListRepository.putItem(item);
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
@@ -148,7 +148,7 @@ class App extends Component {
   renameShoppingList = (listid, newname) => {
     console.log("HERE IN renameShoppingList with id="+listid+", title="+newname);
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
-      shoppingList = shoppingList.set('title', newname);
+      shoppingList = shoppingList.set("title", newname);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(this.getShoppingLists);
   }
@@ -157,20 +157,20 @@ class App extends Component {
     e.preventDefault();
     this.setState({adding: false});
     
-    if (this.state.view === 'lists') {
+    if (this.state.view === "lists") {
       let shoppingList = this.props.shoppingListFactory.newShoppingList({
         title: this.state.newName
       });
       this.props.shoppingListRepository.put(shoppingList).then(this.getShoppingLists);
 
-    } else if (this.state.view === 'items') {
+    } else if (this.state.view === "items") {
       let item = this.props.shoppingListFactory.newShoppingListItem({
         title: this.state.newName
       }, this.state.shoppingList);
       this.props.shoppingListRepository.putItem(item).then(item => {
         this.getShoppingListItems(this.state.shoppingList._id).then(items => {
           this.setState({
-            view: 'items', 
+            view: "items", 
             shoppingListItems: items
           });
         });
@@ -188,14 +188,14 @@ class App extends Component {
 
   renderNewNameUI = () => {
     return (
-      <form onSubmit={this.createNewShoppingListOrItem} style={{marginTop:'12px'}}>
+      <form onSubmit={this.createNewShoppingListOrItem} style={{marginTop:"12px"}}>
         <div class="input-field">
             <input className="validate" type="text" 
               placeholder="Name..." id="input-name" 
               onChange={this.updateName} 
               fullWidth={false} 
-              style={{padding:'0px 12px',width:'calc(100% - 24px)'}}
-              underlineStyle={{width:'calc(100% - 24px)'}}/>
+              style={{padding:"0px 12px",width:"calc(100% - 24px)"}}
+              underlineStyle={{width:"calc(100% - 24px)"}}/>
             {/* <label for="input-name">Name</label> */}
         </div>
       </form>
@@ -204,7 +204,7 @@ class App extends Component {
 
   renderShoppingLists = () => {
     if (this.state.shoppingLists.length < 1)
-      return ( <div className="card" style={{margin:"12px 0"}}><span className="card-title">{NOLISTMSG}</span></div> );
+      return ( <h5>{NOLISTMSG}</h5> );
     return (
       <ShoppingLists 
         shoppingLists={this.state.shoppingLists} 
@@ -229,7 +229,7 @@ class App extends Component {
   }
 
   renderBackButton = () => {
-    if (this.state.view === 'items') 
+    if (this.state.view === "items") 
       return (
         <a className="btn-flat btn-large white-text" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"middle"}}>
           <i className="material-icons">keyboard_backspace</i>
@@ -240,20 +240,21 @@ class App extends Component {
 
   render() {
     let screenname = "Shopping Lists";
-    if (this.state.view === 'items') screenname = this.state.shoppingList.title;
+    if (this.state.view === "items") screenname = this.state.shoppingList.title;
     return (
-      <div className="App container">
+      <div className="App">
         <nav>
           <div className="nav-wrapper">
               <div className="brand-logo left">
                   {this.renderBackButton()}
-                  {screenname}
+                  <span className="hide-on-small-only">{screenname}</span>
+                  <span className="show-on-medium-and-up" style={{"font-size":"14pt"}}>{screenname}</span>
               </div>
           </div>
         </nav>
-        <div className={'listsanditems'} style={{margin:'8px'}}>
+        <div className="listsanditems container" style={{margin:"8px"}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
-          {this.state.view === 'lists' ? this.renderShoppingLists() : this.renderShoppingListItems()}
+          {this.state.view === "lists" ? this.renderShoppingLists() : this.renderShoppingListItems()}
           <div className="row">
             <div className="col s12 right-align">
               <div className="fixed-action-btn">

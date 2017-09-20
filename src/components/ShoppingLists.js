@@ -1,12 +1,5 @@
 import {h, Component} from 'preact';
 
-const iconButtonElement = (
-  <a className="btn-floating waves-effect waves-light" 
-    onClick={this.displayAddingUI}>
-    <i className="material-icons">more_vert</i>
-  </a>
-);
-
 class ShoppingLists extends Component {
   /* all state actions are for handling the renaming dialog */
   state = {
@@ -41,25 +34,26 @@ class ShoppingLists extends Component {
 
   renderEditNameUI = () => {
     return (
-      <div className="row">
-        <div className="col s10">
-          <form onSubmit={this.handleEditingSubmit}>
-            <div class="input-field" 
-              style={{"margin-top":"0.5rem","background-color":"aliceblue"}}>
-                <input type="text" id="input-name" 
-                  ref={(inp)=>{this.nameInput=inp;}} 
-                  value={this.state.oldName} 
-                  onChange={this.updateName} 
-                  style={{height:"unset","margin-bottom":"8px"}}/>
-            </div>
-          </form>
+        <div className="editing">
+          <div className="col s9">
+            <form onSubmit={this.handleEditingSubmit}>
+              <div class="input-field" 
+                style={{"margin-top":"0.5rem","background-color":"aliceblue"}}>
+                  <input type="text" id="input-name" 
+                    ref={(inp)=>{this.nameInput=inp;}} 
+                    value={this.state.oldName} 
+                    onChange={this.updateName} 
+                    style={{height:"unset","font-size":"18pt","margin-bottom":"8px"}}/>
+              </div>
+            </form>
+          </div>
+          <div className="col s3">
+            <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} style={{padding:"0px"}} 
+              onClick={this.handleEditingDone}>
+              <i className="material-icons">close</i>
+            </a>
+          </div>
         </div>
-        <div className="col s2">
-          <a className="btn-flat" onClick={this.handleEditingDone} style={{padding:"0px"}}>
-            <i className="material-icons">close</i>
-          </a>
-        </div>
-      </div>
     );
   }
 
@@ -67,25 +61,38 @@ class ShoppingLists extends Component {
     let listItems = [];
     for(let list of this.props.shoppingLists) {
       listItems.push(
-      <div className="card" key={list._id} style={{margin:"12px 0",padding:"12px"}}>
-        <span className="card-title">
-          {this.state.editingName && this.state.activeListId===list._id ? 
-            this.renderEditNameUI() : list.title}
-        </span>
-
-        <p>{(this.props.checkedCounts.get(list._id) || 0)+' of '+(this.props.totalCounts.get(list._id) || 0)+' items checked.'}</p>
-        <div className="card-action">
-          <a className="btn-flat" onClick={()=>this.props.openListFunc(list._id)}>
-            <i className="material-icons">play_arrow</i> Open
-          </a>
-          <a className="btn-flat" onClick={()=>this.handleEditingStart(list._id, list.title)}>
-            <i className="material-icons">mode_edit</i> Rename
-          </a>
-          <a className="btn-flat" onClick={()=>this.props.deleteListFunc(list._id)}>
-            <i className="material-icons">delete_forever</i> Delete
-          </a>
+      <div className="shoppinglist" key={list._id} style={{margin:"12px 0",padding:"12px"}}>
+        <div class="row" style="margin-bottom: 0px">
+          { this.state.editingName && this.state.activeListId===list._id ? 
+            this.renderEditNameUI() : 
+            <div className="notediting">
+              <div className="col s7">
+                <h5><a href="#" onClick={()=>this.props.openListFunc(list._id)}>{list.title}</a></h5>
+              </div>
+              <div className="col s5 right-align">
+                <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} 
+                  onClick={()=>this.props.openListFunc(list._id)}>
+                  <i className="material-icons">play_arrow</i>
+                </a>
+                <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} 
+                  onClick={()=>this.handleEditingStart(list._id, list.title)}>
+                  <i className="material-icons">mode_edit</i>
+                </a>
+                <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} 
+                  onClick={()=>this.props.deleteListFunc(list._id)}>
+                  <i className="material-icons">delete_forever</i>
+                </a>
+              </div>
+            </div>
+          }
         </div>
-      </div>);
+        <div className="row">
+          <div className="col s12">
+            { (this.props.checkedCounts.get(list._id) || 0)+' of '+(this.props.totalCounts.get(list._id) || 0)+' items checked' }
+          </div>
+        </div>
+      </div>
+    );
   }
   return (
     <div>
