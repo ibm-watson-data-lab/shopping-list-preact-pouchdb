@@ -250,7 +250,7 @@ class App extends Component {
                 <div className="col s2">
                   {this.renderBackButton()}
                 </div>
-                <div className="col s10 truncate">
+                <div className="col s10">
                   {screenname}
                 </div>
               </div>
