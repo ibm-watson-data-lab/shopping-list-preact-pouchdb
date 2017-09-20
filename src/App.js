@@ -231,7 +231,7 @@ class App extends Component {
   renderBackButton = () => {
     if (this.state.view === 'items') 
       return (
-        <a className="btn-flat btn-large white-text" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"unset"}}>
+        <a className="btn-flat btn-large white-text" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"middle"}}>
           <i className="material-icons">keyboard_backspace</i>
         </a>)
     else 
@@ -245,16 +245,10 @@ class App extends Component {
       <div className="App container">
         <nav>
           <div className="nav-wrapper">
-            <div className="brand-logo left">
-              <div className="row">
-                <div className="col s2">
+              <div className="brand-logo left">
                   {this.renderBackButton()}
-                </div>
-                <div className="col s10">
                   {screenname}
-                </div>
               </div>
-            </div>
           </div>
         </nav>
         <div className={'listsanditems'} style={{margin:'8px'}}>
