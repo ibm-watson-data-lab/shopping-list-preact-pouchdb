@@ -39,19 +39,15 @@ class App extends Component {
   }
 
   getShoppingLists = () => {
-    // console.log("IN getShoppingLists");
     let checkedCount = List();
     let totalCount = List();
     let lists = null;
     this.props.shoppingListRepository.find().then( foundLists => {
-      // console.log("got Shopping Lists from PouchDB. count: "+foundLists.size);
       lists = foundLists;
       return foundLists;
     }).then( foundLists => {
       return this.props.shoppingListRepository.findItemsCountByList();
     }).then( countsList => { 
-      // console.log("TOTAL COUNT LIST");
-      // console.log(countsList);
       totalCount = countsList;
       return this.props.shoppingListRepository.findItemsCountByList({
         selector: {
@@ -61,8 +57,6 @@ class App extends Component {
         fields: ["list"]
       });
     }).then( checkedList => {
-      // console.log("CHECKED LIST");
-      // console.log(checkedList);
       checkedCount = checkedList;
       this.setState({
         view: "lists", 
