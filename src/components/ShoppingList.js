@@ -8,6 +8,7 @@ class ShoppingList extends Component {
     oldName: '',
     newName: ''
   };
+
   componentDidUpdate() {
     if ( this.state.editingName === true ) {
       this.nameInput.focus();
@@ -15,7 +16,6 @@ class ShoppingList extends Component {
   }
 
   handleEditingStart = (itemid, itemtitle) => {
-    console.log("in handleEditingStart with itemid="+itemid);
     this.setState({editingName: true, activeItemId: itemid, oldName: itemtitle});
   };
 
