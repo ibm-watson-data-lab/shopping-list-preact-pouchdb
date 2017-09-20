@@ -1,5 +1,4 @@
 import { h, Component } from 'preact';
-import './ShoppingList.css';
 
 const moveVertButton = (
   <a className="btn-floating waves-effect waves-light" 
@@ -8,61 +7,88 @@ const moveVertButton = (
   </a>
 );
 
+const fabPositionStyle = {
+  position: "absolute" 
+}
 
 class ShoppingList extends Component {
   /* all state actions are for handling the renaming dialog */
   state = {
-    open: false,
+    editingName: false,
     activeItemId: '', 
     oldName: '',
     newName: ''
   };
 
-  handleOpen = (itemid, itemtitle) => {
-    this.setState({open: true, activeItemId: itemid, oldName: itemtitle});
+  handleEditingStart = (itemid, itemtitle) => {
+    console.log("in handleEditingStart with itemid="+itemid);
+    this.setState({editingName: true, activeItemId: itemid, oldName: itemtitle});
   };
 
-  handleClose = () => {
-    this.setState({open: false});
+  handleEditingDone = () => {
+    this.setState({editingName: false});
   };
 
-  handleSubmit = (e) => {
+  handleEditingSubmit = (e) => {
     this.props.renameItemFunc(this.state.activeItemId, this.state.newName);
-    this.handleClose();
+    this.handleEditingDone();
   };
 
   updateName = (e) => {
     this.setState({newName: e.target.value});
   }
 
-  render() {
-    /* rename dialog stuff */
-    const actions = [
-      <a className="btn-flat" onClick={this.handleClose}>cancel</a>,
-      <a className="btn-flat" onClick={this.handleSubmit} keyboardFocused={true}>submit</a>
-    ];
-    /* end rename dialog stuff */
+  renderEditNameUI = () => {
+    return (
+      <div>
+        <div className="col s6">
+          <form onSubmit={this.handleEditingSubmit} style={{marginTop:'12px'}}>
+            <div class="input-field">
+                <input className="validate" type="text" 
+                  value={this.state.oldName} id="input-name" 
+                  onChange={this.updateName} 
+                  style={{height:"unset"}}
+                  underlineStyle={{width:'calc(100% - 24px)'}}/>
+            </div>
+          </form>
+        </div>
+        <div className="col s1">
+          <a className="btn-flat" onClick={this.handleEditingDone} style={{padding:"0px"}}>
+            <i className="material-icons">close</i>
+          </a>
+        </div>
+      </div>
+    );
+  }
 
+  render() {
     let items = [];
     for(let item of this.props.shoppingListItems) {
       items.push(
-      <div key={'listitem_'+item._id}>
-      <li className='shoppinglistitem'>
-        <a className="btn-flat" onCheck={this.props.toggleItemCheckFunc} data-item={item._id} data-id={item._id} checked={item.checked}>
-          <i className="material-icons">check_box_outline_blank</i>
-        </a>
-        <span className={(item.checked ? 'checkeditem' : 'uncheckeditem')}>{item.title}</span>
-        <a className="btn-flat" onClick={()=>this.props.openListFunc(list._id)}>
-          <i className="material-icons">play_arrow</i> Open
-        </a>
-        <a className="btn-flat" onClick={()=>this.handleOpen(list._id, list.title)}>
-          <i className="material-icons">mode_edit</i> Rename
-        </a>
-        <a className="btn-flat" onClick={()=>this.props.deleteListFunc(list._id)}>
-          <i className="material-icons">delete_forever</i> Delete
-        </a>
-      </li>
-      <hr inset={true} />
+        <div>
+        <div className="row" key={'listitem_'+item._id} style={{margin:"0.5rem 0 0.5rem 0"}}>
+          <div className="col s1">
+            <input type="checkbox" id={"cb_"+item._id} 
+                onChange={()=>this.props.toggleItemCheckFunc(item._id)} 
+                defaultChecked={item.checked}></input>
+                <label for={"cb_"+item._id} >&nbsp;</label>
+          </div>
+
+          {this.state.editingName && this.state.activeItemId===item._id ? 
+            this.renderEditNameUI() : 
+            <div className="col s7"><span className={item.checked?"checkeditem":"uci"}>{item.title}</span></div> }
+
+          <div className="col s4 right-align ">
+            <a class="btn-flat itemactionbutton" onClick={()=>this.handleEditingStart(item._id, item.title)}>
+              <i className="material-icons">mode_edit</i>
+            </a>
+            <a class="btn-flat itemactionbutton" onClick={()=>this.props.deleteFunc(item._id)}>
+              <i className="material-icons">delete_forever</i>
+            </a>
+          </div>
+      </div>
+
+      <div className="divider" />
       </div>);
     }
       

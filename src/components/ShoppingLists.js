@@ -1,5 +1,4 @@
 import {h, Component} from 'preact';
-import './ShoppingLists.css';
 
 const iconButtonElement = (
   <a className="btn-floating waves-effect waves-light" 

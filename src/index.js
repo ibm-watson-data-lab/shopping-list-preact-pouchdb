@@ -5,6 +5,9 @@ import PouchDBFind from 'pouchdb-find';
 import Credentials from './secret';
 import './material-icons.css';
 import './materialize.min.css';
+// import './materialize.min.js';
+import './App.css';
+
 
 PouchDB.plugin(PouchDBFind);
 const localDB = new PouchDB('shopping_list_react');

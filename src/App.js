@@ -39,19 +39,19 @@ class App extends Component {
   }
 
   getShoppingLists = () => {
-    console.log("IN getShoppingLists");
+    // console.log("IN getShoppingLists");
     let checkedCount = List();
     let totalCount = List();
     let lists = null;
     this.props.shoppingListRepository.find().then( foundLists => {
-      console.log('got Shopping Lists from PouchDB. count: '+foundLists.size);
+      // console.log('got Shopping Lists from PouchDB. count: '+foundLists.size);
       lists = foundLists;
       return foundLists;
     }).then( foundLists => {
       return this.props.shoppingListRepository.findItemsCountByList();
     }).then( countsList => { 
-      console.log('TOTAL COUNT LIST');
-      console.log(countsList);
+      // console.log('TOTAL COUNT LIST');
+      // console.log(countsList);
       totalCount = countsList;
       return this.props.shoppingListRepository.findItemsCountByList({
         selector: {
@@ -61,8 +61,8 @@ class App extends Component {
         fields: ['list']
       });
     }).then( checkedList => {
-      console.log('CHECKED LIST');
-      console.log(checkedList);
+      // console.log('CHECKED LIST');
+      // console.log(checkedList);
       checkedCount = checkedList;
       this.setState({
         view: 'lists', 
@@ -129,8 +129,7 @@ class App extends Component {
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
 
-  toggleItemCheck = (evt) => {
-    let itemid = evt.target.dataset.id;
+  toggleItemCheck = (itemid) => {
     this.props.shoppingListRepository.getItem(itemid).then(item => {
       item = item.set('checked', !item.checked);
       return this.props.shoppingListRepository.putItem(item);
@@ -147,6 +146,7 @@ class App extends Component {
   }
 
   renameShoppingList = (listid, newname) => {
+    console.log("HERE IN renameShoppingList with id="+listid+", title="+newname);
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
       shoppingList = shoppingList.set('title', newname);
       return this.props.shoppingListRepository.put(shoppingList);
@@ -231,7 +231,7 @@ class App extends Component {
   renderBackButton = () => {
     if (this.state.view === 'items') 
       return (
-        <a className="btn-flat" onClick={this.getShoppingLists}>
+        <a className="btn-flat btn-large white-text" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"unset"}}>
           <i className="material-icons">keyboard_backspace</i>
         </a>)
     else 
@@ -242,21 +242,33 @@ class App extends Component {
     let screenname = "Shopping Lists";
     if (this.state.view === 'items') screenname = this.state.shoppingList.title;
     return (
-      <div className="App">
+      <div className="App container">
         <nav>
           <div className="nav-wrapper">
             <div className="brand-logo left">
-              {this.renderBackButton()}
-              {screenname}
+              <div className="row">
+                <div className="col s2">
+                  {this.renderBackButton()}
+                </div>
+                <div className="col s10">
+                  {screenname}
+                </div>
+              </div>
             </div>
           </div>
         </nav>
         <div className={'listsanditems'} style={{margin:'8px'}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
           {this.state.view === 'lists' ? this.renderShoppingLists() : this.renderShoppingListItems()}
-          <a className="btn-floating waves-effect waves-light" onClick={this.displayAddingUI}>
-            <i className="material-icons">add</i>
-          </a>
+          <div className="row">
+            <div className="col s12 right-align">
+              <div className="fixed-action-btn">
+                <a className="btn-floating btn-large" onClick={this.displayAddingUI}>
+                  <i className="material-icons">add</i>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )
