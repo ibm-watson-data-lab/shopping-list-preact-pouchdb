@@ -1,16 +1,5 @@
 import { h, Component } from 'preact';
 
-const moveVertButton = (
-  <a className="btn-floating waves-effect waves-light" 
-    onClick={this.displayAddingUI}>
-    <i className="material-icons">more_vert</i>
-  </a>
-);
-
-const fabPositionStyle = {
-  position: "absolute" 
-}
-
 class ShoppingList extends Component {
   /* all state actions are for handling the renaming dialog */
   state = {
@@ -19,6 +8,11 @@ class ShoppingList extends Component {
     oldName: '',
     newName: ''
   };
+  componentDidUpdate() {
+    if ( this.state.editingName === true ) {
+      this.nameInput.focus();
+    }
+  }
 
   handleEditingStart = (itemid, itemtitle) => {
     console.log("in handleEditingStart with itemid="+itemid);
@@ -42,13 +36,14 @@ class ShoppingList extends Component {
     return (
       <div>
         <div className="col s6">
-          <form onSubmit={this.handleEditingSubmit} style={{marginTop:'12px'}}>
-            <div class="input-field">
-                <input className="validate" type="text" 
-                  value={this.state.oldName} id="input-name" 
+          <form onSubmit={this.handleEditingSubmit}>
+            <div class="input-field" 
+              style={{"margin-top":"0.5rem","background-color":"aliceblue"}}>
+                <input type="text" id="input-name" 
+                  ref={(inp)=>{this.nameInput=inp;}} 
+                  value={this.state.oldName} 
                   onChange={this.updateName} 
-                  style={{height:"unset"}}
-                  underlineStyle={{width:'calc(100% - 24px)'}}/>
+                  style={{height:"unset","margin-bottom":"8px"}}/>
             </div>
           </form>
         </div>
