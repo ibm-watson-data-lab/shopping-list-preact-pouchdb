@@ -1,6 +1,15 @@
+.nav-wrapper {
+    background-color: #03A9F4;
+}
+.btn-floating, input[type="checkbox"] {
+    background-color: #004D40;
+}
 .checkeditem {
     text-decoration: line-through;
     color: #9e9e9e;
 }
 .shoppinglistitem {background-color: white;}
-.itemactionbutton {padding: 0 0.75rem !important;}
+.itemactionbutton {
+    color: #004D40;
+    padding: 0 0.75rem !important;
+}
