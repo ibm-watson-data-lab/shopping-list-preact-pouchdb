@@ -4,8 +4,8 @@ import {ShoppingListFactory, ShoppingListRepositoryPouchDB} from "ibm-shopping-l
 import ShoppingList from "./components/ShoppingList";
 import ShoppingLists from "./components/ShoppingLists";
 
-const NOLISTMSG = "Click the + sign below to create a shopping list."
-const NOITEMSMSG = "Click the + sign below to create a shopping list item."
+const NOLISTMSG = "Click the + sign above to create a shopping list."
+const NOITEMSMSG = "Click the + sign above to create a shopping list item."
 
 const appBarStyle = {
   width: "100%", 
@@ -241,7 +241,7 @@ class App extends Component {
 
   renderShoppingListItems = () => {
     if (this.state.shoppingListItems.size < 1) 
-      return ( <div className="card" style={{margin:"12px 0"}}><span className="card-title">{NOITEMSMSG}</span></div> );
+      return ( <h5>{NOITEMSMSG}</h5> );
     return (
       <ShoppingList 
         shoppingListItems={this.state.shoppingListItems} 
