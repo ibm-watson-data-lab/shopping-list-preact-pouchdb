@@ -131,6 +131,7 @@ class App extends Component {
   }
 
   checkAllListItems = (listid) => {
+    let listcheck = true;
     this.getShoppingListItems(listid).then( items => {
       let newitems = [];
       items.forEach(item => {
@@ -140,6 +141,7 @@ class App extends Component {
       }, this);
       // if all items were already checked let's uncheck them all
       if (newitems.length == 0) {
+        listcheck = false;
         items.forEach(item => {
           newitems.push( item.mergeDeep({checked:false}) );
         }, this);
@@ -149,7 +151,7 @@ class App extends Component {
     }).then(newitemsresponse => {
       return this.props.shoppingListRepository.get(listid);
     }).then(shoppingList => {
-      shoppingList = shoppingList.set("checked", true);
+      shoppingList = shoppingList.set("checked", listcheck);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(shoppingList => {
       this.getShoppingLists();
