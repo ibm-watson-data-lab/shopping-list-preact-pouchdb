@@ -130,6 +130,32 @@ class App extends Component {
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
 
+  checkAllListItems = (listid) => {
+    this.getShoppingListItems(listid).then( items => {
+      let newitems = [];
+      items.forEach(item => {
+        if (!item.checked) {
+          newitems.push( item.mergeDeep({checked:true}) );
+        }
+      }, this);
+      // if all items were already checked let's uncheck them all
+      if (newitems.length == 0) {
+        items.forEach(item => {
+          newitems.push( item.mergeDeep({checked:false}) );
+        }, this);
+      }
+      let listOfShoppingListItems = this.props.shoppingListFactory.newListOfShoppingListItems(newitems);
+      return this.props.shoppingListRepository.putItemsBulk(listOfShoppingListItems);
+    }).then(newitemsresponse => {
+      return this.props.shoppingListRepository.get(listid);
+    }).then(shoppingList => {
+      shoppingList = shoppingList.set("checked", true);
+      return this.props.shoppingListRepository.put(shoppingList);
+    }).then(shoppingList => {
+      this.getShoppingLists();
+    });
+  }
+
   deleteShoppingList = (listid) => {
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
       shoppingList = shoppingList.set("_deleted", true);
@@ -205,6 +231,7 @@ class App extends Component {
         openListFunc={this.openShoppingList} 
         deleteListFunc={this.deleteShoppingList} 
         renameListFunc={this.renameShoppingList} 
+        checkAllFunc={this.checkAllListItems}
         totalCounts={this.state.totalShoppingListItemCount}
         checkedCounts={this.state.checkedTotalShoppingListItemCount} /> 
     )
@@ -239,25 +266,22 @@ class App extends Component {
       <div className="App">
         <nav>
           <div className="nav-wrapper">
-              <div className="brand-logo left">
-                  {this.renderBackButton()}
-                  <span className="hide-on-small-only">{screenname}</span>
-                  <span className="show-on-medium-and-up" style={{"font-size":"14pt"}}>{screenname}</span>
-              </div>
+            <div className="brand-logo left">
+                {this.renderBackButton()}
+                <span className="hide-on-small-only">{screenname}</span>
+                <span className="show-on-medium-and-up" style={{"font-size":"14pt"}}>{screenname}</span>
+            </div>
+            <div className="right">
+              <a className="btn-floating" style={{"margin-right":"8px"}}
+                onClick={this.displayAddingUI}>
+                <i className="material-icons" style={{"line-height":"unset"}}>add</i>
+              </a>
+            </div>
           </div>
         </nav>
         <div className="listsanditems container" style={{margin:"8px"}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
           {this.state.view === "lists" ? this.renderShoppingLists() : this.renderShoppingListItems()}
-          <div className="row">
-            <div className="col s12 right-align">
-              <div className="fixed-action-btn">
-                <a className="btn-floating btn-large" onClick={this.displayAddingUI}>
-                  <i className="material-icons">add</i>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     )

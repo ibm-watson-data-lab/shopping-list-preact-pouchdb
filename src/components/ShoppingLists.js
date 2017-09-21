@@ -87,7 +87,13 @@ class ShoppingLists extends Component {
           }
         </div>
         <div className="row">
-          <div className="col s12">
+          <div className="col s1">
+            <input type="checkbox" id={"cb_"+list._id} 
+              onChange={()=>this.props.checkAllFunc(list._id)} 
+              defaultChecked={false}></input>
+              <label for={"cb_"+list._id} >&nbsp;</label>
+          </div>
+          <div className="col s11">
             { (this.props.checkedCounts.get(list._id) || 0)+' of '+(this.props.totalCounts.get(list._id) || 0)+' items checked' }
           </div>
         </div>
