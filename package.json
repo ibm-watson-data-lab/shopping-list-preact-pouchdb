@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
-    "build": "preact build --no-prerender",
+    "build": "preact build --no-prerender --template=./public/index.html --dest=./docs --clean",
     "test": "eslint src && preact test",
     "serve": "preact build --no-prerender && preact serve",
-    "dev": "preact watch --no-prerender"
+    "dev": "preact watch --template=./public/index.html --config=./preact.config.js"
   },
   "babel": {
     "plugins": [
@@ -29,7 +29,9 @@
   "devDependencies": {
     "eslint": "^4.6.1",
     "eslint-config-synacor": "^1.1.1",
+    "extract-text-webpack-plugin": "^2.1.2",
     "if-env": "^1.0.0",
+    "postcss": "^6.0.11",
     "preact-cli": "^1.4.1"
   },
   "dependencies": {
