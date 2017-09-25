@@ -37,8 +37,8 @@ class ShoppingList extends Component {
       <div>
         <div className="col s6">
           <form onSubmit={this.handleEditingSubmit}>
-            <div class="input-field" 
-              style={{"margin-top":"0.5rem","background-color":"aliceblue"}}>
+            <div className="input-field" 
+              style={{"margin-top":"0.5rem"}}>
                 <input type="text" id="input-name" 
                   ref={(inp)=>{this.nameInput=inp;}} 
                   value={this.state.oldName} 
@@ -61,7 +61,7 @@ class ShoppingList extends Component {
     for(let item of this.props.shoppingListItems) {
       items.push(
         <div>
-        <div className="row" key={'listitem_'+item._id} style={{margin:"0.5rem 0 0.5rem 0"}}>
+        <div className="row shoppinglistitem" key={'listitem_'+item._id} style={{margin:"0.5rem 0 0.5rem 0"}}>
           <div className="col s1">
             <input type="checkbox" id={"cb_"+item._id} 
                 onChange={()=>this.props.toggleItemCheckFunc(item._id)} 
@@ -73,7 +73,7 @@ class ShoppingList extends Component {
             this.renderEditNameUI() : 
             <div className="col s7"><span className={item.checked?"checkeditem":"uci"}>{item.title}</span></div> }
 
-          <div className="col s4 right-align ">
+          <div className="col s4 right-align">
             <a class="btn-flat itemactionbutton" onClick={()=>this.handleEditingStart(item._id, item.title)}>
               <i className="material-icons">mode_edit</i>
             </a>

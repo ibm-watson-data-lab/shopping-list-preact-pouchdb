@@ -37,8 +37,8 @@ class ShoppingLists extends Component {
         <div className="editing">
           <div className="col s9">
             <form onSubmit={this.handleEditingSubmit}>
-              <div class="input-field" 
-                style={{"margin-top":"0.5rem","background-color":"aliceblue"}}>
+              <div className="input-field" 
+                style={{"margin-top":"0.5rem"}}>
                   <input type="text" id="input-name" 
                     ref={(inp)=>{this.nameInput=inp;}} 
                     value={this.state.oldName} 
@@ -70,15 +70,15 @@ class ShoppingLists extends Component {
                 <h5><a href="#" onClick={()=>this.props.openListFunc(list._id)}>{list.title}</a></h5>
               </div>
               <div className="col s5 right-align">
-                <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} 
+                <a className="btn-flat btn-large itemactionbutton" style={{padding:"0 0.5rem"}} 
                   onClick={()=>this.props.openListFunc(list._id)}>
                   <i className="material-icons">play_arrow</i>
                 </a>
-                <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} 
+                <a className="btn-flat btn-large itemactionbutton" style={{padding:"0 0.5rem"}} 
                   onClick={()=>this.handleEditingStart(list._id, list.title)}>
                   <i className="material-icons">mode_edit</i>
                 </a>
-                <a className="btn-flat btn-large" style={{padding:"0 0.5rem"}} 
+                <a className="btn-flat btn-large itemactionbutton" style={{padding:"0 0.5rem"}} 
                   onClick={()=>this.props.deleteListFunc(list._id)}>
                   <i className="material-icons">delete_forever</i>
                 </a>

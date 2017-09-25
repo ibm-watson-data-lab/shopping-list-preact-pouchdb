@@ -15,8 +15,8 @@ const shoppingListRepository = new ShoppingListRepositoryPouchDB(localDB);
 
 import App from './App';
 
+// registerServiceWorker();
 shoppingListRepository.ensureIndexes().then( () => {
-  registerServiceWorker();
   render(<App 
     shoppingListFactory={shoppingListFactory} 
     shoppingListRepository={shoppingListRepository} 

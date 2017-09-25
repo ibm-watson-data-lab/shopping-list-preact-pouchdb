@@ -31,7 +31,6 @@ class App extends Component {
       this.props.localDB.sync(this.props.remoteDB, {live: true, retry: true})
         .on("change", change => {
           // console.log("something changed!");
-          this.getPouchDocs();
         })
         // .on("paused", info => console.log("replication paused."))
         // .on("active", info => console.log("replication resumed."))
@@ -254,7 +253,7 @@ class App extends Component {
   renderBackButton = () => {
     if (this.state.view === "items") 
       return (
-        <a className="btn-flat btn-large white-text" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"middle"}}>
+        <a className="btn-flat btn-large white-text backbutton" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"top"}}>
           <i className="material-icons">keyboard_backspace</i>
         </a>)
     else 
@@ -270,18 +269,17 @@ class App extends Component {
           <div className="nav-wrapper">
             <div className="brand-logo left">
                 {this.renderBackButton()}
-                <span className="hide-on-small-only">{screenname}</span>
-                <span className="show-on-medium-and-up" style={{"font-size":"14pt"}}>{screenname}</span>
+                <span>{screenname}</span>
             </div>
             <div className="right">
-              <a className="btn-floating" style={{"margin-right":"8px"}}
+              <a className="btn-floating pink lighten-2" style={{"margin-right":"8px"}}
                 onClick={this.displayAddingUI}>
                 <i className="material-icons" style={{"line-height":"unset"}}>add</i>
               </a>
             </div>
           </div>
         </nav>
-        <div className="listsanditems container" style={{margin:"8px"}}>
+        <div className="listsanditems container" style={{margin:"8px",backgroundColor:"white"}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
           {this.state.view === "lists" ? this.renderShoppingLists() : this.renderShoppingListItems()}
         </div>

@@ -7,7 +7,7 @@
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
     "build": "preact build --no-prerender --template=./public/index.html --dest=./docs --clean",
     "test": "eslint src && preact test",
-    "serve": "preact build --no-prerender && preact serve",
+    "serve": "preact build --no-prerender --template=./public/index.html --dest=./docs --clean && preact serve",
     "dev": "preact watch --template=./public/index.html --config=./preact.config.js"
   },
   "babel": {

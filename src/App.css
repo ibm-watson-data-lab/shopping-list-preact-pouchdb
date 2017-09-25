@@ -1,15 +1,22 @@
 .nav-wrapper {
-    background-color: #03A9F4;
+    background-color: #52647a;
 }
-.btn-floating, input[type="checkbox"] {
-    background-color: #004D40;
+/* .btn-floating, input[type="checkbox"] {
+    background-color: #ff6ca1;
+} */
+input[type="checkbox"]:checked+label:before {
+    border-right-color: #c83873;
+    border-bottom-color: #c83873;
 }
 .checkeditem {
     text-decoration: line-through;
     color: #9e9e9e;
 }
-.shoppinglistitem {background-color: white;}
+.shoppinglist, .shoppinglistitem {background-color: white;}
 .itemactionbutton {
-    color: #004D40;
+    color: #273a4e;
     padding: 0 0.75rem !important;
+}
+.btn-large:hover, .itemactionbutton:hover {
+    background-color: #ff9fd2;
 }
