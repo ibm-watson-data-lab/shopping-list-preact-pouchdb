@@ -6,7 +6,6 @@ import Credentials from './secret';
 import registerServiceWorker from './registerServiceWorker';
 import './App.css';
 
-
 PouchDB.plugin(PouchDBFind);
 const localDB = new PouchDB('shopping_list_react');
 const remoteDB = new PouchDB(Credentials.cloudant_url);
@@ -15,7 +14,6 @@ const shoppingListRepository = new ShoppingListRepositoryPouchDB(localDB);
 
 import App from './App';
 
-registerServiceWorker();
 shoppingListRepository.ensureIndexes().then( () => {
   render(<App 
     shoppingListFactory={shoppingListFactory} 
@@ -26,3 +24,4 @@ shoppingListRepository.ensureIndexes().then( () => {
   console.log("ERROR in ensureIndexes");
   console.log(err);
 });
+registerServiceWorker();
