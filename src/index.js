@@ -3,7 +3,6 @@ import { ShoppingListFactory, ShoppingListRepositoryPouchDB } from 'ibm-shopping
 import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import Credentials from './secret';
-import registerServiceWorker from './registerServiceWorker';
 import './App.css';
 
 PouchDB.plugin(PouchDBFind);
@@ -24,4 +23,3 @@ shoppingListRepository.ensureIndexes().then( () => {
   console.log("ERROR in ensureIndexes");
   console.log(err);
 });
-registerServiceWorker();
