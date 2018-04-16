@@ -57,7 +57,7 @@ Explore the code in this GitHub repository to see how the Offline First design i
 
 # Tutorial
 <!--Correct tutorial link if one exists for your repository. Otherwise, remove this section. -->
-Refer to the [tutorial](https://github.com/ibm-watson-data-lab/shopping-list-vanillajs-pouchdb/tree/master/tutorial) for step-by-step instructions on how to build your own Offline First shopping list Progressive Web App with Vanilla JS (aka plain old JavaScript) and PouchDB.
+Refer to the tutorial for step-by-step instructions on how to build your own Offline First shopping list Progressive Web App with Preact and PouchDB.
 
 # Live demo
 To see this app in action without installing anything, simply visit https://ibm-watson-data-lab.github.io/shopping-list-preact-pouchdb/ in a web browser or on your mobile device.
@@ -116,7 +116,7 @@ Second, install the dependent packages:
 
 ### 3. Run the server
 
-This command serves the app at `http://127.0.0.1:8081` and provides basic URL routing for the app:
+This command serves the app at `http://127.0.0.1:8080` and provides basic URL routing for the app:
 
     $ npm start
 
