@@ -196,7 +196,7 @@ class App extends Component {
           });
         });
       });
-    }
+    } 
   }
 
   updateName = (e) => {
@@ -205,6 +205,29 @@ class App extends Component {
 
   displayAddingUI = () => {
     this.setState({adding: true});
+  }
+
+  displayLists = () => {
+    this.setState({view: "lists"})
+  }
+
+  displayAbout = () => {
+    this.setState({view: "about"});
+  }
+
+  renderAbout = () => {
+    return (
+      <div class="card" style="padding:30px">
+        <div class="card-body">
+          <div class="card-title">About this app</div>
+          <p class="card-text">
+            <a href="https://github.com/ibm-watson-data-lab/shopping-list">Shopping List is a series of Offline First demo apps, each built using a different stack</a>. These demo apps cover Progressive Web Apps, hybrid mobile apps, native mobile apps, and desktop apps. 
+             This particular demo app is a <strong>Progressive Web App</strong> built using <strong>Preact and PouchDB</strong>. 
+          </p>
+           <a class="card-link" href="https://github.com/ibm-watson-data-lab/shopping-list-preact-pouchdb">Get the source code</a>.
+        </div>
+      </div>
+    )
   }
 
   renderNewNameUI = () => {
@@ -269,9 +292,13 @@ class App extends Component {
           <div className="nav-wrapper">
             <div className="brand-logo left">
                 {this.renderBackButton()}
-                <span>{screenname}</span>
+                <span onClick={this.displayLists}>{screenname}</span>
             </div>
             <div className="right">
+              <a className="btn pink lighten-2" style={{"margin-right":"8px"}}
+                onClick={this.displayAbout}>
+                About
+              </a>
               <a className="btn-floating pink lighten-2" style={{"margin-right":"8px"}}
                 onClick={this.displayAddingUI}>
                 <i className="material-icons" style={{"line-height":"unset"}}>add</i>
@@ -281,7 +308,11 @@ class App extends Component {
         </nav>
         <div className="listsanditems container" style={{margin:"8px",backgroundColor:"white"}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
-          {this.state.view === "lists" ? this.renderShoppingLists() : this.renderShoppingListItems()}
+          { this.state.view === 'items' ? this.renderShoppingListItems(): '' } 
+          { this.state.view === 'lists' ? this.renderShoppingLists(): '' } 
+        </div>
+        <div>
+          { this.state.view === 'about' ? this.renderAbout(): '' }
         </div>
       </div>
     )
