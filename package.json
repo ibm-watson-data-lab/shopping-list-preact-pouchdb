@@ -31,8 +31,7 @@
     "eslint-config-synacor": "^1.1.1",
     "extract-text-webpack-plugin": "^2.1.2",
     "if-env": "^1.0.0",
-    "postcss": "^6.0.11",
-    "preact-cli": "^1.4.1"
+    "postcss": "^6.0.11"
   },
   "dependencies": {
     "chai": "^4.1.2",
@@ -47,6 +46,7 @@
     "pouchdb": "^6.3.4",
     "pouchdb-find": "^6.3.4",
     "preact": "^8.2.5",
+    "preact-cli": "^2.2.1",
     "prop-types": "^15.5.10"
   }
 }
