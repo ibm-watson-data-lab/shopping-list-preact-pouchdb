@@ -2,10 +2,11 @@ import { h, Component } from 'preact';
 import { List } from 'immutable';
 import ShoppingList from './components/ShoppingList';
 import ShoppingLists from './components/ShoppingLists';
+import PouchDB from 'pouchdb';
 
 const NOLISTMSG = 'Click the + sign above to create a shopping list.';
 const NOITEMSMSG = 'Click the + sign above to create a shopping list item.';
-
+const localConfig = '_local/user';
 class App extends Component {
 
 
@@ -33,7 +34,7 @@ class App extends Component {
         shoppingList: null,
         shoppingListItems: null,
         checkedTotalShoppingListItemCount: checkedCount,
-        totalShoppingListItemCount: totalCount
+        totalShoppingListItemCount: totalCount,
       });
     }).catch(err => {
       // console.log('ERROR in getShoppingLists');
@@ -176,6 +177,43 @@ class App extends Component {
     this.setState({ view: 'about' });
   }
 
+  displaySettings = () => {
+    this.setState({ view: 'settings' });
+  }
+
+  saveLocalDoc = (doc) => {
+    const db = this.props.localDB;
+    return db.get(doc._id).then((data) => {
+      doc._rev = data._rev;
+      return db.put(doc);
+    }).catch((e) => {
+      return db.put(doc);
+    });
+  }
+
+  updateURL = (e) => {
+    this.setState({ url: e.target.value });
+    var obj = {
+      '_id': localConfig,
+      'syncURL': e.target.value
+    };
+    this.saveLocalDoc(obj).then(console.log);
+  }
+
+  startSync = (e) => {
+    console.log('start sync', this.state.url)
+    if (this.state.url) {
+      this.state.remoteDB = new PouchDB(this.state.url)
+      this.props.localDB.sync(this.state.remoteDB, { live: true, retry: true })
+        .on('change', change => {
+          // console.log("something changed!");
+        })
+        // .on("paused", info => console.log("replication paused."))
+        // .on("active", info => console.log("replication resumed."))
+        .on('error', err => { });
+    }
+  }
+
 
   constructor(props) {
     super(props);
@@ -193,13 +231,12 @@ class App extends Component {
 
   componentDidMount = () => {
     this.getShoppingLists();
-    this.props.localDB.sync(this.props.remoteDB, { live: true, retry: true })
-      .on('change', change => {
-        // console.log("something changed!");
-      })
-      // .on("paused", info => console.log("replication paused."))
-      // .on("active", info => console.log("replication resumed."))
-      .on('error', err => { });
+    this.props.localDB.get(localConfig).then((doc) => {
+      console.log('local doc', doc)
+      this.setState({url: doc.syncURL || ''})
+      this.startSync()
+    })
+    
   }
 
   renderAbout = () => (
@@ -211,6 +248,22 @@ class App extends Component {
           This particular demo app is a <strong>Progressive Web App</strong> built using <strong>Preact and PouchDB</strong>.
         </p>
         <a class="card-link" href="https://github.com/ibm-watson-data-lab/shopping-list-preact-pouchdb">Get the source code</a>.
+      </div>
+    </div>
+  )
+
+  renderSettings = () => (
+    <div class="card" style="padding:30px">
+      <div class="card-body">
+        <div class="card-title">Setings</div>
+        <p class="card-text">
+          You can sync your shopping lists to a remote Apache CouchDB, IBM Cloudant or PouchDB server. Supply the URL, including
+          credentials and database name and hit "Start Sync".
+        </p>
+        <div class="input-group">
+          <input type="url" value={this.state.url} onChange={this.updateURL} class="form-control" placeholder="e.g http://localhost:5984/list"></input>
+        </div>
+        <button class="btn btn-lg" onClick={this.startSync}>Start Sync</button>
       </div>
     </div>
   )
@@ -281,6 +334,11 @@ class App extends Component {
             </div>
             <div className="right">
               <a className="btn pink lighten-2" style={{ 'margin-right': '8px' }}
+                onClick={this.displaySettings}
+              >
+                Settings
+              </a>
+              <a className="btn pink lighten-2" style={{ 'margin-right': '8px' }}
                 onClick={this.displayAbout}
               >
                 About
@@ -300,6 +358,7 @@ class App extends Component {
         </div>
         <div>
           {this.state.view === 'about' ? this.renderAbout() : ''}
+          {this.state.view === 'settings' ? this.renderSettings() : ''}
         </div>
       </div>
     );
