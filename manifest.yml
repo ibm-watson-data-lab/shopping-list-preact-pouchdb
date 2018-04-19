@@ -1,0 +1,14 @@
+declared-services:
+  slpp-cloudantNoSQLDB:
+    label: cloudantNoSQLDB
+    plan: Lite
+applications:
+- name: shopping-list-preact-pouchdb
+  buildpack: sdk-for-nodejs
+  memory: 2048M
+  instances: 1
+  disk_quota: 1024M
+  services:
+  - slpp-cloudantNoSQLDB
+env:
+  OPTIMIZE_MEMORY: true
