@@ -1,5 +1,7 @@
+// load Preact components
 import { h, Component } from 'preact';
 
+// renders a shopping list
 class ShoppingList extends Component {
 
   /* all state actions are for handling the renaming dialog */
@@ -10,29 +12,35 @@ class ShoppingList extends Component {
     newName: ''
   };
 
+  // reset focus
   componentDidUpdate() {
     if (this.state.editingName === true) {
       this.nameInput.focus();
     }
   }
 
+  // record that editing is starting
   handleEditingStart = (itemid, itemtitle) => {
     this.setState({ editingName: true, activeItemId: itemid, oldName: itemtitle });
   };
 
+  // record that editing is done
   handleEditingDone = () => {
     this.setState({ editingName: false });
   };
 
+  //  UI handler for submission of editing form
   handleEditingSubmit = (e) => {
     this.props.renameItemFunc(this.state.activeItemId, this.state.newName);
     this.handleEditingDone();
   };
 
+  // UI handler for editing the name
   updateName = (e) => {
     this.setState({ newName: e.target.value });
   }
 
+  // JSX - edit name markup
   renderEditNameUI = () => (
     <div>
       <div className="col s6">
@@ -57,6 +65,7 @@ class ShoppingList extends Component {
     </div>
   )
 
+  // JSX - render the component
   render() {
     let items = [];
     for (let item of this.props.shoppingListItems) {
