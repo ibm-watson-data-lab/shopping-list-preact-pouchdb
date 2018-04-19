@@ -1,24 +1,36 @@
+// load the 'h' function that powers the Preact JSX Hyperscript function
 import { h, Component } from 'preact';
+
+// we use the List types to store shopping lists and their items
 import { List } from 'immutable';
 import ShoppingList from './components/ShoppingList';
 import ShoppingLists from './components/ShoppingLists';
+
+// PouchDB is our in-browser database that can store state whether we are on-line or not
 import PouchDB from 'pouchdb';
 
+// constants
 const NOLISTMSG = 'Click the + sign above to create a shopping list.';
 const NOITEMSMSG = 'Click the + sign above to create a shopping list item.';
 const localConfig = '_local/user';
+
+// main App preact component
 class App extends Component {
 
-
+  // sets the app's state depending on what it finds in the shopping list database
   getShoppingLists = () => {
     let checkedCount = new List();
     let totalCount = new List();
     let lists = null;
+
+    // load list of shopping lists
     this.props.shoppingListRepository.find().then(foundLists => {
       lists = foundLists;
       return foundLists;
     }).then(foundLists => this.props.shoppingListRepository.findItemsCountByList()).then(countsList => {
       totalCount = countsList;
+
+      // calculate number of items by list
       return this.props.shoppingListRepository.findItemsCountByList({
         selector: {
           type: 'item',
@@ -28,6 +40,8 @@ class App extends Component {
       });
     }).then(checkedList => {
       checkedCount = checkedList;
+
+      // update the Preact app's state
       this.setState({
         view: 'lists',
         shoppingLists: lists,
@@ -37,11 +51,10 @@ class App extends Component {
         totalShoppingListItemCount: totalCount,
       });
     }).catch(err => {
-      // console.log('ERROR in getShoppingLists');
-      // console.log(err);
     });
   }
 
+  // load the shopping list items from the database
   getShoppingListItems = (listid) => this.props.shoppingListRepository.findItems({
     selector: {
       type: 'item',
@@ -49,6 +62,7 @@ class App extends Component {
     }
   })
 
+  // re-load the shopping list items
   refreshShoppingListItems = (listid) => {
     this.props.shoppingListRepository.findItems({
       selector: {
@@ -63,6 +77,7 @@ class App extends Component {
     });
   }
 
+  // load a single shopping list by its id
   openShoppingList = (listid) => {
     this.props.shoppingListRepository.get(listid).then(list => list).then(list => {
       this.getShoppingListItems(listid).then(items => {
@@ -75,6 +90,7 @@ class App extends Component {
     });
   }
 
+  // load a shopping list item, update its name and write it back to the database
   renameShoppingListItem = (itemid, newname) => {
     this.props.shoppingListRepository.getItem(itemid).then(item => {
       item = item.set('title', newname);
@@ -82,9 +98,12 @@ class App extends Component {
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
 
+  // delete a shopping list item i.e. load it and write it back as a deletion
   deleteShoppingListItem = (itemid) => {
     this.props.shoppingListRepository.getItem(itemid).then(item => this.props.shoppingListRepository.deleteItem(item)).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
+
+  // mark a shopping list item as "checked" (done)
   toggleItemCheck = (itemid) => {
     this.props.shoppingListRepository.getItem(itemid).then(item => {
       item = item.set('checked', !item.checked);
@@ -92,8 +111,11 @@ class App extends Component {
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
 
+  // mark all of a shopping list items as checked
   checkAllListItems = (listid) => {
     let listcheck = true;
+
+    // load the items
     this.getShoppingListItems(listid).then(items => {
       let newitems = [];
       items.forEach(item => {
@@ -108,16 +130,22 @@ class App extends Component {
           newitems.push(item.mergeDeep({ checked: false }));
         }, this);
       }
+
+      // write back in a single bulk request
       let listOfShoppingListItems = this.props.shoppingListFactory.newListOfShoppingListItems(newitems);
       return this.props.shoppingListRepository.putItemsBulk(listOfShoppingListItems);
     }).then(newitemsresponse => this.props.shoppingListRepository.get(listid)).then(shoppingList => {
+      
+      // update the shopping list object itself
       shoppingList = shoppingList.set('checked', listcheck);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(shoppingList => {
+      // reload the shopping lists
       this.getShoppingLists();
     });
   }
 
+  // delete a shopping list
   deleteShoppingList = (listid) => {
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
       shoppingList = shoppingList.set('_deleted', true);
@@ -127,6 +155,7 @@ class App extends Component {
     });
   }
 
+  // rename a shopping list
   renameShoppingList = (listid, newname) => {
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
       shoppingList = shoppingList.set('title', newname);
@@ -134,10 +163,13 @@ class App extends Component {
     }).then(this.getShoppingLists);
   }
 
+  // creates a new shopping list or a new shopping list item, depending
+  // on the state of the app
   createNewShoppingListOrItem = (e) => {
     e.preventDefault();
     this.setState({ adding: false });
 
+    // new shopping list
     if (this.state.view === 'lists') {
       let shoppingList = this.props.shoppingListFactory.newShoppingList({
         title: this.state.newName
@@ -145,6 +177,7 @@ class App extends Component {
       this.props.shoppingListRepository.put(shoppingList).then(this.getShoppingLists);
 
     }
+    // new shopping list item
     else if (this.state.view === 'items') {
       let item = this.props.shoppingListFactory.newShoppingListItem({
         title: this.state.newName
@@ -159,28 +192,33 @@ class App extends Component {
       });
     }
   }
-
-
+  
+  // handles UI event when a name is changed
   updateName = (e) => {
     this.setState({ newName: e.target.value });
   }
 
+  // handles UI event where user clicks the + button
   displayAddingUI = () => {
     this.setState({ adding: true });
   }
 
+  // sets the app into "lists" mode
   displayLists = () => {
     this.setState({ view: 'lists' });
   }
 
+  // sets the app into "about" mode
   displayAbout = () => {
     this.setState({ view: 'about' });
   }
 
+  // sets the app into "settings" mode
   displaySettings = () => {
     this.setState({ view: 'settings' });
   }
 
+  // utility function to save a local PouchDB document
   saveLocalDoc = (doc) => {
     const db = this.props.localDB;
     return db.get(doc._id).then((data) => {
@@ -191,6 +229,7 @@ class App extends Component {
     });
   }
 
+  // handles UI event when the sync URL is changed
   updateURL = (e) => {
     this.setState({ url: e.target.value });
     var obj = {
@@ -200,23 +239,28 @@ class App extends Component {
     this.saveLocalDoc(obj).then(console.log);
   }
 
+  // starts a sync operation between the local PouchDB database and the remote
+  // Cloudant/CouchDB/PouchDB databases
   startSync = (e) => {
-    console.log('start sync', this.state.url)
+    // if we have a sync URL
     if (this.state.url) {
+      // initialise PouchDB
       this.state.remoteDB = new PouchDB(this.state.url)
+
+      // start a live, continuous sync between our local DB and the remote DB
       this.props.localDB.sync(this.state.remoteDB, { live: true, retry: true })
         .on('change', change => {
           // console.log("something changed!");
         })
-        // .on("paused", info => console.log("replication paused."))
-        // .on("active", info => console.log("replication resumed."))
         .on('error', err => { });
     }
   }
 
-
+  // application constructor
   constructor(props) {
     super(props);
+
+    // initialise state
     this.state = {
       shoppingList: null,
       shoppingLists: [],
@@ -229,16 +273,22 @@ class App extends Component {
     };
   }
 
+  // called when the application is loaded and ready to run
   componentDidMount = () => {
+
+    // load the shopping lists
     this.getShoppingLists();
+
+    // load the local config - start sync if we have previously saved 
+    // a remote DB's URL
     this.props.localDB.get(localConfig).then((doc) => {
       console.log('local doc', doc)
       this.setState({url: doc.syncURL || ''})
       this.startSync()
     })
-    
   }
 
+  // JSX - markup for the about panel
   renderAbout = () => (
     <div class="card" style="padding:30px">
       <div class="card-body">
@@ -252,6 +302,7 @@ class App extends Component {
     </div>
   )
 
+  // JSX - markup for the settings panel
   renderSettings = () => (
     <div class="card" style="padding:30px">
       <div class="card-body">
@@ -268,6 +319,7 @@ class App extends Component {
     </div>
   )
 
+  // JSX - markup for the new shopping list/item panel
   renderNewNameUI = () => (
     <form onSubmit={this.createNewShoppingListOrItem} style={{ marginTop: '12px' }}>
       <div class="input-field">
@@ -283,6 +335,7 @@ class App extends Component {
     </form>
   )
 
+  // render the shopping list component
   renderShoppingLists = () => {
     if (this.state.shoppingLists.length < 1)
       return (<h5>{NOLISTMSG}</h5>);
@@ -299,6 +352,7 @@ class App extends Component {
     );
   }
 
+  // render the shopping list item component
   renderShoppingListItems = () => {
     if (this.state.shoppingListItems.size < 1)
       return (<h5>{NOITEMSMSG}</h5>);
@@ -312,6 +366,7 @@ class App extends Component {
     );
   }
 
+  // JSX - back button
   renderBackButton = () => {
     if (this.state.view === 'items')
       return (
@@ -321,6 +376,7 @@ class App extends Component {
     return <span />;
   }
 
+  // JSX - main app markup
   render() {
     let screenname = 'Shopping Lists';
     if (this.state.view === 'items') screenname = this.state.shoppingList.title;
