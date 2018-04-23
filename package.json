@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "start": "if-env NODE_ENV=production && npm run serve || npm run dev",
     "build": "preact build --no-prerender --template=./index.html --dest=./docs --clean",
     "test": "eslint src && karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "serve": "preact build --no-prerender --template=./index.html --dest=./docs --clean && preact serve",
