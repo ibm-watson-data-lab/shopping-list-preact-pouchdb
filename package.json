@@ -7,7 +7,7 @@
     "start": "if-env NODE_ENV=production && npm run serve || npm run dev",
     "build": "preact build --no-prerender --template=./index.html --dest=./docs --clean",
     "test": "eslint src && karma start --single-run --browsers ChromeHeadless karma.conf.js",
-    "serve": "preact build --no-prerender --template=./index.html --dest=./docs --clean && preact serve",
+    "serve": "preact build --no-prerender --template=./index.html --dest=./docs --clean && superstatic docs --gzip --host 0.0.0.0 --port 8080",
     "dev": "preact watch --template=./index.html --config=./preact.config.js"
   },
   "babel": {
