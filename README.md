@@ -200,17 +200,13 @@ This project does not, at present, have any automated tests. If you'd like to co
 
 ## Deploying to GitHub Pages
 
-<!-- remove this section (and the dependent sub-sections) if the repo is not enabled for metrics collection -->
 # Privacy Notice
-<!-- No change required. Only link to the "master" privacy notice; this avoids duplication of content and -->
-<!-- conflicting information should the underlying metrics infrastructure change -->
 
-Refer to https://github.com/IBM/metrics-collector-service#privacy-notice.
+This web application includes code to track deployments to [IBM Cloud](https://www.ibm.com/cloud/) runtimes and services. Refer to https://github.com/IBM/metrics-collector-service#privacy-notice.
 
 ## Disabling Deployment Tracking
 
-<!-- Update the instructions as required -->
-To disable tracking, simply remove ``require('metrics-tracker-client').track();`` from the ``app.js`` file in the top level directory.
+To disable tracking, simply remove `&& metrics-tracker-client track` from the `serve` script within the `package.json` file in the top level directory. Optionally, you can also run `npm uninstall metrics-tracker-client` to remove the metrics tracker client dependency.
 
 <!--Include any relevant links-->
 
