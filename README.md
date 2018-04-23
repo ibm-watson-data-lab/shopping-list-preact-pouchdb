@@ -200,10 +200,7 @@ This project does not, at present, have any automated tests. If you'd like to co
 
 ## Deploying to GitHub Pages
 
-<!-- remove this section (and the dependent sub-sections) if the repo is not enabled for metrics collection -->
 # Privacy Notice
-<!-- No change required. Only link to the "master" privacy notice; this avoids duplication of content and -->
-<!-- conflicting information should the underlying metrics infrastructure change -->
 
 Refer to https://github.com/IBM/metrics-collector-service#privacy-notice.
 
