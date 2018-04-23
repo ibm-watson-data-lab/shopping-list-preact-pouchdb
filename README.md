@@ -4,7 +4,7 @@
 <!-- Metrics collection: Follow the setup instructions for the appropriate client in https://github.com/IBM/metrics-collector-service (required) -->
 <!-- remove metrics badge if no metrics collection is performed -->
 [![Build Status](https://travis-ci.org/ibm-watson-data-lab/shopping-list-preact-pouchdb.svg?branch=master)](https://travis-ci.org/ibm-watson-data-lab/shopping-list-preact-pouchdb.svg?branch=master)
-![IBM Cloud Deployments](https://metrics-tracker.mybluemix.net/stats/527357940ca5e1027fbf945add3b15c4/badge.svg)
+![IBM Cloud Deployments](https://metrics-tracker.mybluemix.net/stats/0838e9f6e62b2afd767bdee96acb0f08/badge.svg)
 
 # Create an Offline First Shopping List with Preact and PouchDB
 
