@@ -47,6 +47,7 @@
     "pouchdb-find": "^6.3.4",
     "preact": "^8.2.5",
     "preact-cli": "^2.2.1",
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "superstatic": "^5.0.1"
   }
 }
