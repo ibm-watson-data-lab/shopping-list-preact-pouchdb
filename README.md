@@ -206,8 +206,7 @@ This web application includes code to track deployments to [IBM Cloud](https://w
 
 ## Disabling Deployment Tracking
 
-<!-- Update the instructions as required -->
-To disable tracking, simply remove ``require('metrics-tracker-client').track();`` from the ``app.js`` file in the top level directory.
+To disable tracking, simply remove `&& metrics-tracker-client track` from the `serve` script within the `package.json` file in the top level directory. Optionally, you can also run `npm uninstall metrics-tracker-client` to remove the metrics tracker client dependency.
 
 <!--Include any relevant links-->
 
