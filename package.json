@@ -4,10 +4,10 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "start": "if-env NODE_ENV=production && npm run serve || npm run dev",
     "build": "preact build --no-prerender --template=./index.html --dest=./docs --clean",
     "test": "eslint src && karma start --single-run --browsers ChromeHeadless karma.conf.js",
-    "serve": "preact build --no-prerender --template=./index.html --dest=./docs --clean && preact serve",
+    "serve": "preact build --no-prerender --template=./index.html --dest=./docs --clean && metrics-tracker-client track && superstatic docs --gzip --host 0.0.0.0 --port 8080",
     "dev": "preact watch --template=./index.html --config=./preact.config.js"
   },
   "babel": {
@@ -30,23 +30,25 @@
     "eslint": "^4.6.1",
     "eslint-config-synacor": "^1.1.1",
     "extract-text-webpack-plugin": "^2.1.2",
-    "if-env": "^1.0.0",
     "postcss": "^6.0.11"
   },
   "dependencies": {
     "chai": "^4.1.2",
     "ibm-shopping-list-model": "^0.2.1",
+    "if-env": "^1.0.4",
     "immutable": "^3.8.1",
     "karma": "^2.0.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "materialize-css": "^0.100.2",
+    "metrics-tracker-client": "^0.3.0",
     "mocha": "^5.1.0",
     "pouchdb": "^6.3.4",
     "pouchdb-find": "^6.3.4",
     "preact": "^8.2.5",
     "preact-cli": "^2.2.1",
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "superstatic": "^5.0.1"
   }
 }
