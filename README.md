@@ -202,7 +202,7 @@ This project does not, at present, have any automated tests. If you'd like to co
 
 # Privacy Notice
 
-Refer to https://github.com/IBM/metrics-collector-service#privacy-notice.
+This web application includes code to track deployments to [IBM Cloud](https://www.ibm.com/cloud/) runtimes and services. Refer to https://github.com/IBM/metrics-collector-service#privacy-notice.
 
 ## Disabling Deployment Tracking
 
