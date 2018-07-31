@@ -27,20 +27,22 @@
     "extends": "eslint-config-synacor"
   },
   "devDependencies": {
-    "eslint": "^4.6.1",
-    "eslint-config-synacor": "^1.1.1",
+    "eslint": "^4.19.1",
+    "eslint-config-synacor": "^1.1.2",
     "extract-text-webpack-plugin": "^2.1.2",
-    "if-env": "^1.0.0",
+    "if-env": "^1.0.4",
     "postcss": "^6.0.11",
-    "preact-cli": "^1.4.1"
+    "preact-cli": "^2.2.1",
+    "tunnel-agent": "^0.6.0"
   },
   "dependencies": {
-    "ibm-shopping-list-model": "^0.2.1",
-    "immutable": "^3.8.1",
+    "ibm-shopping-list-model": "^0.2.6",
+    "immutable": "^3.8.2",
+    "lodash": "^4.17.10",
     "materialize-css": "^0.100.2",
-    "pouchdb": "^6.3.4",
-    "pouchdb-find": "^6.3.4",
-    "preact": "^8.2.5",
-    "prop-types": "^15.5.10"
+    "pouchdb": "^7.0.0",
+    "pouchdb-find": "^6.4.3",
+    "preact": "^8.2.9",
+    "prop-types": "^15.6.2"
   }
 }
