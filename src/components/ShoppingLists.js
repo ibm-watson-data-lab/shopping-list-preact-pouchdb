@@ -1,4 +1,3 @@
-// load Preact components
 import { h, Component } from 'preact';
 
 // ShoppingLists component

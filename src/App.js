@@ -1,21 +1,36 @@
-// load the 'h' function that powers the Preact JSX Hyperscript function
 import { h, Component } from 'preact';
-
-// we use the List types to store shopping lists and their items
 import { List } from 'immutable';
 import ShoppingList from './components/ShoppingList';
 import ShoppingLists from './components/ShoppingLists';
 
-// PouchDB is our in-browser database that can store state whether we are on-line or not
-import PouchDB from 'pouchdb';
-
-// constants
 const NOLISTMSG = 'Click the + sign above to create a shopping list.';
 const NOITEMSMSG = 'Click the + sign above to create a shopping list item.';
-const localConfig = '_local/user';
 
-// main App preact component
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      shoppingList: null,
+      shoppingLists: [],
+      totalShoppingListItemCount: List(), //Immutable.js List with list ids as keys
+      checkedTotalShoppingListItemCount: List(), //Immutable.js List with list ids as keys
+      shoppingListItems: null,
+      adding: false,
+      view: 'lists',
+      newName: ''
+    }
+  }
+
+  componentDidMount = () => {
+      this.getShoppingLists();
+      this.props.localDB.sync(this.props.remoteDB, { live: true, retry: true })
+        .on('change', change => {
+          // console.log('something changed!');
+        })
+        // .on('paused', info => console.log('replication paused.'))
+        // .on('active', info => console.log('replication resumed.'))
+        .on('error', err => console.log('uh oh! an error occured.'));
+  }
 
   // sets the app's state depending on what it finds in the shopping list database
   getShoppingLists = () => {
@@ -33,7 +48,7 @@ class App extends Component {
       // calculate number of items by list
       return this.props.shoppingListRepository.findItemsCountByList({
         selector: {
-          type: 'item',
+          type: 'item', 
           checked: true
         },
         fields: ['list']
@@ -43,35 +58,53 @@ class App extends Component {
 
       // update the Preact app's state
       this.setState({
-        view: 'lists',
-        shoppingLists: lists,
+        view: 'lists', 
+        shoppingLists: lists, 
         shoppingList: null,
-        shoppingListItems: null,
-        checkedTotalShoppingListItemCount: checkedCount,
-        totalShoppingListItemCount: totalCount,
+        shoppingListItems: null, 
+        checkedTotalShoppingListItemCount: checkedCount, 
+        totalShoppingListItemCount: totalCount
+      });
+    }).catch( err => {
+      console.log('ERROR in getShoppingLists');
+      console.log(err);
+    });
+  }
+
+  openShoppingList = (listid) => {
+    this.props.shoppingListRepository.get(listid).then( list => {
+      return list;
+    }).then(list => {
+      this.getShoppingListItems(listid).then(items => {
+        this.setState({
+          view: 'items',
+          shoppingList: list,
+          shoppingListItems: items
+        });
       });
     }).catch(err => {
     });
   }
 
-  // load the shopping list items from the database
-  getShoppingListItems = (listid) => this.props.shoppingListRepository.findItems({
-    selector: {
-      type: 'item',
-      list: listid
-    }
-  })
+  getShoppingListItems = (listid) => {
+    return this.props.shoppingListRepository.findItems({
+      selector: {
+        type: 'item',
+        list: listid
+      }
+    });
+  }
 
   // re-load the shopping list items
   refreshShoppingListItems = (listid) => {
     this.props.shoppingListRepository.findItems({
       selector: {
-        type: 'item',
+        type: 'item', 
         list: listid
       }
     }).then(items => {
       this.setState({
-        view: 'items',
+        view: 'items', 
         shoppingListItems: items
       });
     });
@@ -92,6 +125,7 @@ class App extends Component {
 
   // load a shopping list item, update its name and write it back to the database
   renameShoppingListItem = (itemid, newname) => {
+    console.log('IN renameShoppingListItem with id='+itemid+', name='+newname);
     this.props.shoppingListRepository.getItem(itemid).then(item => {
       item = item.set('title', newname);
       return this.props.shoppingListRepository.putItem(item);
@@ -134,9 +168,9 @@ class App extends Component {
       // write back in a single bulk request
       let listOfShoppingListItems = this.props.shoppingListFactory.newListOfShoppingListItems(newitems);
       return this.props.shoppingListRepository.putItemsBulk(listOfShoppingListItems);
-    }).then(newitemsresponse => this.props.shoppingListRepository.get(listid)).then(shoppingList => {
-      
-      // update the shopping list object itself
+    }).then(newitemsresponse => {
+      return this.props.shoppingListRepository.get(listid);
+    }).then(shoppingList => {
       shoppingList = shoppingList.set('checked', listcheck);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(shoppingList => {
@@ -157,6 +191,7 @@ class App extends Component {
 
   // rename a shopping list
   renameShoppingList = (listid, newname) => {
+    console.log('HERE IN renameShoppingList with id='+listid+', title='+newname);
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
       shoppingList = shoppingList.set('title', newname);
       return this.props.shoppingListRepository.put(shoppingList);
@@ -167,18 +202,15 @@ class App extends Component {
   // on the state of the app
   createNewShoppingListOrItem = (e) => {
     e.preventDefault();
-    this.setState({ adding: false });
-
-    // new shopping list
+    this.setState({adding: false});
+    
     if (this.state.view === 'lists') {
       let shoppingList = this.props.shoppingListFactory.newShoppingList({
         title: this.state.newName
       });
       this.props.shoppingListRepository.put(shoppingList).then(this.getShoppingLists);
 
-    }
-    // new shopping list item
-    else if (this.state.view === 'items') {
+    } else if (this.state.view === 'items') {
       let item = this.props.shoppingListFactory.newShoppingListItem({
         title: this.state.newName
       }, this.state.shoppingList);
@@ -203,9 +235,19 @@ class App extends Component {
     this.setState({ adding: true });
   }
 
-  // sets the app into "lists" mode
-  displayLists = () => {
-    this.setState({ view: 'lists' });
+  renderNewNameUI = () => {
+    return (
+      <form onSubmit={this.createNewShoppingListOrItem} style={{ marginTop:'12px' }}>
+        <div class="input-field">
+            <input className="validate" type="text"
+              placeholder="Name..." id="input-name"
+              onChange={ this.updateName }
+              fullWidth={ false }
+              style={{ padding:"0px 12px",width:"calc(100% - 24px)" }}
+              underlineStyle={{ width:"calc(100% - 24px)" }}/>
+        </div>
+      </form>
+    );
   }
 
   // sets the app into "about" mode
@@ -389,32 +431,16 @@ class App extends Component {
               <span onClick={this.displayLists}>{screenname}</span>
             </div>
             <div className="right">
-              <a className="btn pink lighten-2" style={{ 'margin-right': '8px' }}
-                onClick={this.displaySettings}
-              >
-                Settings
-              </a>
-              <a className="btn pink lighten-2" style={{ 'margin-right': '8px' }}
-                onClick={this.displayAbout}
-              >
-                About
-              </a>
-              <a className="btn-floating pink lighten-2" style={{ 'margin-right': '8px' }}
-                onClick={this.displayAddingUI}
-              >
-                <i className="material-icons" style={{ 'line-height': 'unset' }}>add</i>
+              <a className="btn-floating pink lighten-2" style={{'margin-right':'8px'}}
+                onClick={this.displayAddingUI}>
+                <i className="material-icons" style={{'line-height':'unset'}}>add</i>
               </a>
             </div>
           </div>
         </nav>
-        <div className="listsanditems container" style={{ margin: '8px', backgroundColor: 'white' }}>
-          {this.state.adding ? this.renderNewNameUI() : <span />}
-          {this.state.view === 'items' ? this.renderShoppingListItems() : ''}
-          {this.state.view === 'lists' ? this.renderShoppingLists() : ''}
-        </div>
-        <div>
-          {this.state.view === 'about' ? this.renderAbout() : ''}
-          {this.state.view === 'settings' ? this.renderSettings() : ''}
+        <div className="listsanditems container" style={{margin:'8px',backgroundColor:'white'}}>
+          {this.state.adding ? this.renderNewNameUI() : <span/>}
+          {this.state.view === 'lists' ? this.renderShoppingLists() : this.renderShoppingListItems()}
         </div>
       </div>
     );
