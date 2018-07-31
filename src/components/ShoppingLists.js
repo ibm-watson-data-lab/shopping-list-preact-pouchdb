@@ -1,4 +1,4 @@
-import {h, Component} from 'preact';
+import { h, Component } from 'preact';
 
 class ShoppingLists extends Component {
   /* all state actions are for handling the renaming dialog */

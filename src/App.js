@@ -1,40 +1,35 @@
-import {h, Component} from "preact";
-import {List} from "immutable";
-import {ShoppingListFactory, ShoppingListRepositoryPouchDB} from "ibm-shopping-list-model";
-import ShoppingList from "./components/ShoppingList";
-import ShoppingLists from "./components/ShoppingLists";
+import { h, Component } from 'preact';
+import { List } from 'immutable';
+import ShoppingList from './components/ShoppingList';
+import ShoppingLists from './components/ShoppingLists';
 
-const NOLISTMSG = "Click the + sign above to create a shopping list."
-const NOITEMSMSG = "Click the + sign above to create a shopping list item."
-
-const appBarStyle = {
-  width: "100%", 
-};
+const NOLISTMSG = 'Click the + sign above to create a shopping list.';
+const NOITEMSMSG = 'Click the + sign above to create a shopping list item.';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shoppingList: null, 
-      shoppingLists: [], 
+      shoppingList: null,
+      shoppingLists: [],
       totalShoppingListItemCount: List(), //Immutable.js List with list ids as keys
       checkedTotalShoppingListItemCount: List(), //Immutable.js List with list ids as keys
-      shoppingListItems: null, 
-      adding: false, 
-      view: "lists",
-      newName: ""
+      shoppingListItems: null,
+      adding: false,
+      view: 'lists',
+      newName: ''
     }
   }
 
   componentDidMount = () => {
       this.getShoppingLists();
-      this.props.localDB.sync(this.props.remoteDB, {live: true, retry: true})
-        .on("change", change => {
-          // console.log("something changed!");
+      this.props.localDB.sync(this.props.remoteDB, { live: true, retry: true })
+        .on('change', change => {
+          // console.log('something changed!');
         })
-        // .on("paused", info => console.log("replication paused."))
-        // .on("active", info => console.log("replication resumed."))
-        .on("error", err => console.log("uh oh! an error occured."));
+        // .on('paused', info => console.log('replication paused.'))
+        // .on('active', info => console.log('replication resumed.'))
+        .on('error', err => console.log('uh oh! an error occured.'));
   }
 
   getShoppingLists = () => {
@@ -50,15 +45,15 @@ class App extends Component {
       totalCount = countsList;
       return this.props.shoppingListRepository.findItemsCountByList({
         selector: {
-          type: "item", 
+          type: 'item', 
           checked: true
         },
-        fields: ["list"]
+        fields: ['list']
       });
     }).then( checkedList => {
       checkedCount = checkedList;
       this.setState({
-        view: "lists", 
+        view: 'lists', 
         shoppingLists: lists, 
         shoppingList: null,
         shoppingListItems: null, 
@@ -66,7 +61,7 @@ class App extends Component {
         totalShoppingListItemCount: totalCount
       });
     }).catch( err => {
-      console.log("ERROR in getShoppingLists");
+      console.log('ERROR in getShoppingLists');
       console.log(err);
     });
   }
@@ -77,7 +72,7 @@ class App extends Component {
     }).then(list => {
       this.getShoppingListItems(listid).then(items => {
         this.setState({
-          view: "items", 
+          view: 'items',
           shoppingList: list,
           shoppingListItems: items
         });
@@ -88,7 +83,7 @@ class App extends Component {
   getShoppingListItems = (listid) => {
     return this.props.shoppingListRepository.findItems({
       selector: {
-        type: "item", 
+        type: 'item',
         list: listid
       }
     });
@@ -97,21 +92,21 @@ class App extends Component {
   refreshShoppingListItems = (listid) => {
     this.props.shoppingListRepository.findItems({
       selector: {
-        type: "item", 
+        type: 'item', 
         list: listid
       }
     }).then(items => {
       this.setState({
-        view: "items", 
+        view: 'items', 
         shoppingListItems: items
       });
     });
   }
 
   renameShoppingListItem = (itemid, newname) => {
-    console.log("IN renameShoppingListItem with id="+itemid+", name="+newname);
+    console.log('IN renameShoppingListItem with id='+itemid+', name='+newname);
     this.props.shoppingListRepository.getItem(itemid).then(item => {
-      item = item.set("title", newname);
+      item = item.set('title', newname);
       return this.props.shoppingListRepository.putItem(item);
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
@@ -124,7 +119,7 @@ class App extends Component {
 
   toggleItemCheck = (itemid) => {
     this.props.shoppingListRepository.getItem(itemid).then(item => {
-      item = item.set("checked", !item.checked);
+      item = item.set('checked', !item.checked);
       return this.props.shoppingListRepository.putItem(item);
     }).then(this.refreshShoppingListItems(this.state.shoppingList._id));
   }
@@ -150,7 +145,7 @@ class App extends Component {
     }).then(newitemsresponse => {
       return this.props.shoppingListRepository.get(listid);
     }).then(shoppingList => {
-      shoppingList = shoppingList.set("checked", listcheck);
+      shoppingList = shoppingList.set('checked', listcheck);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(shoppingList => {
       this.getShoppingLists();
@@ -159,7 +154,7 @@ class App extends Component {
 
   deleteShoppingList = (listid) => {
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
-      shoppingList = shoppingList.set("_deleted", true);
+      shoppingList = shoppingList.set('_deleted', true);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(result => {
       this.getShoppingLists();
@@ -167,9 +162,9 @@ class App extends Component {
   }
 
   renameShoppingList = (listid, newname) => {
-    console.log("HERE IN renameShoppingList with id="+listid+", title="+newname);
+    console.log('HERE IN renameShoppingList with id='+listid+', title='+newname);
     this.props.shoppingListRepository.get(listid).then(shoppingList => {
-      shoppingList = shoppingList.set("title", newname);
+      shoppingList = shoppingList.set('title', newname);
       return this.props.shoppingListRepository.put(shoppingList);
     }).then(this.getShoppingLists);
   }
@@ -178,20 +173,20 @@ class App extends Component {
     e.preventDefault();
     this.setState({adding: false});
     
-    if (this.state.view === "lists") {
+    if (this.state.view === 'lists') {
       let shoppingList = this.props.shoppingListFactory.newShoppingList({
         title: this.state.newName
       });
       this.props.shoppingListRepository.put(shoppingList).then(this.getShoppingLists);
 
-    } else if (this.state.view === "items") {
+    } else if (this.state.view === 'items') {
       let item = this.props.shoppingListFactory.newShoppingListItem({
         title: this.state.newName
       }, this.state.shoppingList);
       this.props.shoppingListRepository.putItem(item).then(item => {
         this.getShoppingListItems(this.state.shoppingList._id).then(items => {
           this.setState({
-            view: "items", 
+            view: 'items',
             shoppingListItems: items
           });
         });
@@ -200,24 +195,23 @@ class App extends Component {
   }
 
   updateName = (e) => {
-    this.setState({newName: e.target.value});
+    this.setState({ newName: e.target.value });
   }
 
   displayAddingUI = () => {
-    this.setState({adding: true});
+    this.setState({ adding: true });
   }
 
   renderNewNameUI = () => {
     return (
-      <form onSubmit={this.createNewShoppingListOrItem} style={{marginTop:"12px"}}>
+      <form onSubmit={this.createNewShoppingListOrItem} style={{ marginTop:'12px' }}>
         <div class="input-field">
-            <input className="validate" type="text" 
-              placeholder="Name..." id="input-name" 
-              onChange={this.updateName} 
-              fullWidth={false} 
-              style={{padding:"0px 12px",width:"calc(100% - 24px)"}}
-              underlineStyle={{width:"calc(100% - 24px)"}}/>
-            {/* <label for="input-name">Name</label> */}
+            <input className="validate" type="text"
+              placeholder="Name..." id="input-name"
+              onChange={ this.updateName }
+              fullWidth={ false }
+              style={{ padding:"0px 12px",width:"calc(100% - 24px)" }}
+              underlineStyle={{ width:"calc(100% - 24px)" }}/>
         </div>
       </form>
     );
@@ -251,7 +245,7 @@ class App extends Component {
   }
 
   renderBackButton = () => {
-    if (this.state.view === "items") 
+    if (this.state.view === 'items')
       return (
         <a className="btn-flat btn-large white-text backbutton" onClick={this.getShoppingLists} style={{"padding":"0px","vertical-align":"top"}}>
           <i className="material-icons">keyboard_backspace</i>
@@ -261,8 +255,8 @@ class App extends Component {
   }
 
   render() {
-    let screenname = "Shopping Lists";
-    if (this.state.view === "items") screenname = this.state.shoppingList.title;
+    let screenname = 'Shopping Lists';
+    if (this.state.view === 'items') screenname = this.state.shoppingList.title;
     return (
       <div className="App">
         <nav>
@@ -272,16 +266,16 @@ class App extends Component {
                 <span>{screenname}</span>
             </div>
             <div className="right">
-              <a className="btn-floating pink lighten-2" style={{"margin-right":"8px"}}
+              <a className="btn-floating pink lighten-2" style={{'margin-right':'8px'}}
                 onClick={this.displayAddingUI}>
-                <i className="material-icons" style={{"line-height":"unset"}}>add</i>
+                <i className="material-icons" style={{'line-height':'unset'}}>add</i>
               </a>
             </div>
           </div>
         </nav>
-        <div className="listsanditems container" style={{margin:"8px",backgroundColor:"white"}}>
+        <div className="listsanditems container" style={{margin:'8px',backgroundColor:'white'}}>
           {this.state.adding ? this.renderNewNameUI() : <span/>}
-          {this.state.view === "lists" ? this.renderShoppingLists() : this.renderShoppingListItems()}
+          {this.state.view === 'lists' ? this.renderShoppingLists() : this.renderShoppingListItems()}
         </div>
       </div>
     )
